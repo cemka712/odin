@@ -1,5 +1,3 @@
-
-
 import pygame 
 
 
@@ -10,7 +8,20 @@ def hello_world(x):
         print(x)
 
 hello_world('print')
-pygame.init()
-screen = pygame.display.set_mode()
 
-print('hello world')
+pygame.init()
+screen = pygame.display.set_mode((600, 300))
+
+
+display1 = True
+while display1:
+
+    pygame.display.update()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            display1 = False
+
+
+if __name__ == '__main__':
+    print('hello world')
