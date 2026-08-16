@@ -14,6 +14,6 @@ ruff: requirements
 	uv run ruff check . $(ARGS)
 
 
-.PHONY: launch
-launch: requirements
-	uv run beg.py
+.PHONY: run1
+run1: requirements
+	uv run main.py
