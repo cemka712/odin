@@ -1,5 +1,7 @@
-import pygame
 import sys
+
+import pygame
+
 
 class BaseScene:
     def handle_event(self, event):
@@ -16,12 +18,12 @@ class MenuScene(BaseScene):
         return None
 
     def draw(self, screen):
-        screen.fill((0, 0, 0)) 
-        
+        screen.fill((0, 0, 0))
+
         # Вместо шрифта рисуем большой зелёный прямоугольник,
         # символизирующий, что мы в меню.
         pygame.draw.rect(screen, (0, 200, 0), (120, 200, 400, 80))
-        
+
         # Можно нарисовать внутри него красный квадрат, как символ игрока
         pygame.draw.rect(screen, (255, 0, 0), (300, 220, 40, 40))
 
@@ -44,18 +46,18 @@ class GameScene(BaseScene):
             if self.player.pos == self.enemy.pos and not self.enemy.is_dead:
                 self.enemy.hp -= 1                   # Отнимаем 1 HP
                 self.enemy.hit_effect_timer = 10     # Включаем вспышку на 10 кадров
-                
+
                 if self.enemy.hp <= 0:
                     self.enemy.is_dead = True
                     # Здесь позже можно будет добавить звук смерти врага
 
         # --- 2. ПЕРЕМЕЩЕНИЕ ИГРОКА ---
         dy, dx = self.player.get_movement(event) #[cite: 1]
-        
+
         if dy != 0 or dx != 0: #[cite: 1]
             new_y = self.player.pos[0] + dy #[cite: 1]
             new_x = self.player.pos[1] + dx #[cite: 1]
-            
+
             # Простая проверка: если там не стена, то идем[cite: 1]
             if self.map_data[new_y][new_x] != 1: #[cite: 1]
                 self.player.pos[0] = new_y #[cite: 1]
@@ -67,14 +69,14 @@ class GameScene(BaseScene):
 
     def draw(self, screen):
         screen.fill((0, 0, 0))
-        
+
         # Отрисовка массива
         for row_idx, row in enumerate(self.map_data):
             for col_idx, tile in enumerate(row):
                 if tile == 1:
                     # Рисуем серые квадраты (стены)
                     pygame.draw.rect(screen, (100, 100, 100), (col_idx * 40, row_idx * 40, 38, 38))
-                    
+
         # Отрисовка игрока (обязательно ВНЕ цикла перебора карты)
         # Координата X = колонка (player_pos[1]), координата Y = строка (player_pos[0])
         pygame.draw.rect(screen, (255, 0, 0), (self.player_pos[1] * 40, self.player_pos[0] * 40, 38, 38))
@@ -95,7 +97,7 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            
+
             # Передаем событие активной сцене
             next_scene = active_scene.handle_event(event)
             # Если сцена вернула новый объект сцены, переключаемся на него

@@ -16,4 +16,4 @@ ruff: requirements
 
 .PHONY: run1
 run1: requirements
-	uv run main.py
+	uv run python -m src.main
