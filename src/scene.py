@@ -2,42 +2,47 @@ import sys
 
 import pygame
 
+from src.classes import Enemy, Environment, Player
+from src.config import settings
 
 class BaseScene:
-    def handle_event(self, event):
-        pass
-    def update(self):
-        pass
-    def draw(self, screen):
-        pass
+    # ... (Остается как раньше)
+    def handle_event(self, event): pass
+    def update(self): pass
+    def draw(self, screen): pass
 
 class MenuScene(BaseScene):
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-            return GameScene()
+            # Передаем размеры экрана в игровую сцену
+            return GameScene(settings.SCREEN_WIDTH, settings.SCREEN_WIDTH)
         return None
 
     def draw(self, screen):
         screen.fill((0, 0, 0))
+        pygame.draw.rect(screen, (0, 200, 0), (120, 200, 400, 80)) # Заглушка вместо текста
 
-        # Вместо шрифта рисуем большой зелёный прямоугольник,
-        # символизирующий, что мы в меню.
-        pygame.draw.rect(screen, (0, 200, 0), (120, 200, 400, 80))
 
-        # Можно нарисовать внутри него красный квадрат, как символ игрока
-        pygame.draw.rect(screen, (255, 0, 0), (300, 220, 40, 40))
 
 class GameScene(BaseScene):
-    def __init__(self):
-        # Окружение через двумерный массив (карту): 1 - стена, 0 - пол
-        self.map_data = [
-            [1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 1, 1, 0, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1, 1, 1, 1]
-        ]
-        self.player_pos = [1, 1] # [строка, колонка] (Y, X)
+    def __init__(self, screen_width, screen_height):
+        # Карта (массив)
+        # self.map_data = [
+        #     [1, 1, 1, 1, 1, 1, 1, 1],
+        #     [1, 0, 0, 0, 0, 0, 0, 1],
+        #     [1, 0, 1, 1, 0, 1, 0, 1],
+        #     [1, 0, 0, 0, 0, 0, 0, 1],
+        #     [1, 1, 1, 1, 1, 1, 1, 1]
+        # ]
+
+        # 1. Инициализация окружения
+        self.env = Environment()
+
+        # 2. Инициализация игрока (передаем размеры тайла для картинки)
+        self.player = Player([1, 1], settings.TILE_WIDTH, settings.TILE_HEIGHT)
+
+        # 3. Инициализация врага
+        self.enemy = Enemy([3, 5], settings.TILE_WIDTH, settings.TILE_HEIGHT)
 
     def handle_event(self, event):
         # --- 1. ОБРАБОТКА УДАРА (Кнопка X) ---
@@ -49,37 +54,38 @@ class GameScene(BaseScene):
 
                 if self.enemy.hp <= 0:
                     self.enemy.is_dead = True
-                    # Здесь позже можно будет добавить звук смерти врага
 
-        # --- 2. ПЕРЕМЕЩЕНИЕ ИГРОКА ---
-        dy, dx = self.player.get_movement(event) #[cite: 1]
+        # # --- 2. ПЕРЕМЕЩЕНИЕ ИГРОКА ---
+        # dy, dx = self.player.get_movement(event)
 
-        if dy != 0 or dx != 0: #[cite: 1]
-            new_y = self.player.pos[0] + dy #[cite: 1]
-            new_x = self.player.pos[1] + dx #[cite: 1]
+        # if dy != 0 or dx != 0:
+        #     new_y = self.player.pos[0] + dy
+        #     new_x = self.player.pos[1] + dx
 
-            # Простая проверка: если там не стена, то идем[cite: 1]
-            if self.map_data[new_y][new_x] != 1: #[cite: 1]
-                self.player.pos[0] = new_y #[cite: 1]
-                self.player.pos[1] = new_x #[cite: 1]
+        #     # Простая проверка: если там не стена, то идем
+        #     if settings.MAP[new_y][new_x] != 1:
+        #         self.player.pos[0] = new_y
+        #         self.player.pos[1] = new_x
 
     def update(self):
-        # Здесь будет функция расчёта (проверка границ массива, столкновений)
-        pass
+        self.enemy.update()
 
     def draw(self, screen):
-        screen.fill((0, 0, 0))
+        # Вызываем методы draw наших классов
+        self.env.draw(screen)
+        self.enemy.draw(screen)
+        self.player.draw(screen)
 
-        # Отрисовка массива
-        for row_idx, row in enumerate(self.map_data):
-            for col_idx, tile in enumerate(row):
-                if tile == 1:
-                    # Рисуем серые квадраты (стены)
-                    pygame.draw.rect(screen, (100, 100, 100), (col_idx * 40, row_idx * 40, 38, 38))
+        dy, dx = self.player.get_movement()
 
-        # Отрисовка игрока (обязательно ВНЕ цикла перебора карты)
-        # Координата X = колонка (player_pos[1]), координата Y = строка (player_pos[0])
-        pygame.draw.rect(screen, (255, 0, 0), (self.player_pos[1] * 40, self.player_pos[0] * 40, 38, 38))
+        if dy != 0 or dx != 0:
+            new_y = self.player.pos[0] + dy
+            new_x = self.player.pos[1] + dx
+        
+            # Простая проверка: если там не стена, то идем
+            if settings.MAP[new_y][new_x] != 1:
+                self.player.pos[0] = new_y
+                self.player.pos[1] = new_x
 
 
 # === Менеджер сцен и главный цикл ===
