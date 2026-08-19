@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import pygame
 
 from src.config import settings
@@ -9,16 +11,47 @@ class Environment:
         self.wall_img = pygame.transform.scale(settings.IMAGE.WALL_IMG, (settings.TILE_WIDTH, settings.TILE_HEIGHT))
         self.floor_img = pygame.transform.scale(settings.IMAGE.FLOOR_IMG, (settings.TILE_WIDTH, settings.TILE_HEIGHT))
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface):
+        width = settings.SCREEN_WIDTH
+        height = settings.SCREEN_HEIGHT
+        cols = settings.COLS
+        rows = settings.ROWS
+
+        # Рисуем центральную точку для проверки
+        pygame.draw.circle(screen, (0, 255, 0), (width // 2, height // 2), 3)
+
+        # Вычисляем стартовую (верхнюю левую) координату сетки так, 
+        # чтобы центр карты совпал с центром экрана
+        start_x = (width // 2) - (cols * settings.TILE_WIDTH // 2)
+        start_y = (height // 2) - (rows * settings.TILE_HEIGHT // 2)
+
+        # Один цикл для обхода ВСЕЙ карты без срезов
         for row_idx, row in enumerate(self.map_data):
             for col_idx, tile in enumerate(row):
-                x = col_idx * settings.TILE_WIDTH
-                y = row_idx * settings.TILE_HEIGHT
+                
+                # Координата текущей плитки рассчитывается от стартовой точки
+                x = start_x + col_idx * settings.TILE_WIDTH
+                y = start_y + row_idx * settings.TILE_HEIGHT
 
+                # Отрисовка
                 screen.blit(self.floor_img, (x, y))
-
                 if tile == 1:
                     screen.blit(self.wall_img, (x, y))
+
+
+        # for row_idx, row in enumerate(self.map_data):
+        #     for col_idx, tile in enumerate(row):
+                # x = col_idx * settings.TILE_WIDTH + s_x
+                # y = row_idx * settings.TILE_HEIGHT + s_y
+
+                # screen.blit(self.floor_img, (x, y))
+                # if col_idx == l_x and row_idx == l_y:
+                #     pygame.draw.circle(screen, (0, 255, 0), (x,y), 3)
+                # else: 
+                #     pygame.draw.circle(screen, (255, 0, 0), (x,y), 3)
+
+                # if tile == 1:
+                #     screen.blit(self.wall_img, (x, y))
 
 
 class Player:

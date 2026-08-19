@@ -25,7 +25,7 @@ class ImageSettings(BaseSettings):
     @model_validator(mode="after")
     def all_img(self):
         self.WALL_IMG = image.load(self.STATIC_DIR+'Стена.bmp')
-        self.PLAYER_IMG = image.load(self.STATIC_DIR+'edward.bmp')
+        self.PLAYER_IMG = image.load(self.STATIC_DIR+'edward.png')
         self.FLOOR_IMG = image.load(self.STATIC_DIR+'доска.bmp')
         self.ENEMY_IMG = image.load(self.STATIC_DIR+'horror.bmp')
 
@@ -39,7 +39,7 @@ class Settings(BaseSettings):
         env_file='.env'
     )
 
-    SCREEN_WIDTH: int
+    SCREEN_WIDTH: int | None = None
     SCREEN_HEIGHT: int
     COLS: int | None = None
     ROWS: int | None = None
@@ -59,7 +59,11 @@ class Settings(BaseSettings):
         self.COLS = len(self.MAP[0])
 
         self.TILE_HEIGHT = self.SCREEN_HEIGHT // self.ROWS
-        self.TILE_WIDTH = self.SCREEN_WIDTH // self.COLS
+        self.TILE_WIDTH = self.TILE_HEIGHT
+
+        self.SCREEN_WIDTH = self.TILE_HEIGHT * self.COLS
+
+        # self.TILE_WIDTH = self.SCREEN_WIDTH // self.COLS
 
         return self
 

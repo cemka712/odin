@@ -16,33 +16,35 @@ class MenuScene(BaseScene):
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
             # Передаем размеры экрана в игровую сцену
-            return GameScene(settings.SCREEN_WIDTH, settings.SCREEN_WIDTH)
+            return GameScene()
         return None
 
     def draw(self, screen):
         screen.fill((0, 0, 0))
-        pygame.draw.rect(screen, (0, 200, 0), (120, 200, 400, 80)) # Заглушка вместо текста
+        pygame.draw.rect(screen, (0, 200, 0), (120, 200, 400, 80))
 
 
 
 class GameScene(BaseScene):
-    def __init__(self, screen_width, screen_height):
+    def __init__(self):
         self.env = Environment()
         self.player = Player([1, 1], settings.TILE_WIDTH, settings.TILE_HEIGHT)
         self.enemy = Enemy([3, 5], settings.TILE_WIDTH, settings.TILE_HEIGHT)
 
     def handle_event(self, event):
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_x:
-            self.player.attack(self.enemy)
+        pass
+        # if event.type == pygame.KEYDOWN and event.key == pygame.K_x:
+        #     self.player.attack(self.enemy)
 
     def update(self):
-        self.player.update_movement()
-        self.enemy.update() #[cite: 9]
+        pass
+        # self.player.update_movement()
+        # self.enemy.update() #[cite: 9]
 
     def draw(self, screen):
         self.env.draw(screen) #[cite: 9]
-        self.player.draw(screen) #[cite: 9]
-        self.enemy.draw(screen) #[cite: 9]
+        # self.player.draw(screen) #[cite: 9]
+        # self.enemy.draw(screen) #[cite: 9]
 
 
 # # === Менеджер сцен и главный цикл ===

@@ -28,6 +28,13 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.VIDEORESIZE:
+                settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT = event.w, event.h
+                screen = pygame.display.set_mode(
+                    (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), 
+                    pygame.RESIZABLE
+                )
+
 
             next_scene = active_scene.handle_event(event)
 
