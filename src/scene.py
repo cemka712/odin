@@ -26,66 +26,22 @@ class MenuScene(BaseScene):
 
 class GameScene(BaseScene):
     def __init__(self, screen_width, screen_height):
-        # Карта (массив)
-        # self.map_data = [
-        #     [1, 1, 1, 1, 1, 1, 1, 1],
-        #     [1, 0, 0, 0, 0, 0, 0, 1],
-        #     [1, 0, 1, 1, 0, 1, 0, 1],
-        #     [1, 0, 0, 0, 0, 0, 0, 1],
-        #     [1, 1, 1, 1, 1, 1, 1, 1]
-        # ]
-
-        # 1. Инициализация окружения
         self.env = Environment()
-
-        # 2. Инициализация игрока (передаем размеры тайла для картинки)
         self.player = Player([1, 1], settings.TILE_WIDTH, settings.TILE_HEIGHT)
-
-        # 3. Инициализация врага
         self.enemy = Enemy([3, 5], settings.TILE_WIDTH, settings.TILE_HEIGHT)
 
     def handle_event(self, event):
-        # --- 1. ОБРАБОТКА УДАРА (Кнопка X) ---
         if event.type == pygame.KEYDOWN and event.key == pygame.K_x:
-            # Проверяем, что игрок и враг на одной клетке, и враг еще жив
-            if self.player.pos == self.enemy.pos and not self.enemy.is_dead:
-                self.enemy.hp -= 1                   # Отнимаем 1 HP
-                self.enemy.hit_effect_timer = 10     # Включаем вспышку на 10 кадров
-
-                if self.enemy.hp <= 0:
-                    self.enemy.is_dead = True
-
-        # # --- 2. ПЕРЕМЕЩЕНИЕ ИГРОКА ---
-        # dy, dx = self.player.get_movement(event)
-
-        # if dy != 0 or dx != 0:
-        #     new_y = self.player.pos[0] + dy
-        #     new_x = self.player.pos[1] + dx
-
-        #     # Простая проверка: если там не стена, то идем
-        #     if settings.MAP[new_y][new_x] != 1:
-        #         self.player.pos[0] = new_y
-        #         self.player.pos[1] = new_x
+            self.player.attack(self.enemy)
 
     def update(self):
-        self.enemy.update()
+        self.player.update_movement()
+        self.enemy.update() #[cite: 9]
 
     def draw(self, screen):
-        # Вызываем методы draw наших классов
-        self.env.draw(screen)
-        self.enemy.draw(screen)
-        self.player.draw(screen)
-
-        dy, dx = self.player.get_movement()
-
-        if dy != 0 or dx != 0:
-            new_y = self.player.pos[0] + dy
-            new_x = self.player.pos[1] + dx
-        
-            # Простая проверка: если там не стена, то идем
-            if settings.MAP[new_y][new_x] != 1:
-                self.player.pos[0] = new_y
-                self.player.pos[1] = new_x
+        self.env.draw(screen) #[cite: 9]
+        self.player.draw(screen) #[cite: 9]
+        self.enemy.draw(screen) #[cite: 9]
 
 
 # === Менеджер сцен и главный цикл ===
@@ -104,13 +60,10 @@ def main():
                 pygame.quit()
                 sys.exit()
 
-            # Передаем событие активной сцене
             next_scene = active_scene.handle_event(event)
-            # Если сцена вернула новый объект сцены, переключаемся на него
             if next_scene is not None:
                 active_scene = next_scene
 
-        # Вызываем логику и отрисовку активной сцены
         active_scene.update()
         active_scene.draw(screen)
 

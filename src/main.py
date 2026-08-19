@@ -24,10 +24,10 @@ def main():
                 pygame.quit()
                 sys.exit()
 
-        next_scene = active_scene.handle_event(event)
+            next_scene = active_scene.handle_event(event)
 
-        if next_scene is not None:
-            active_scene = next_scene
+            if next_scene is not None:
+                active_scene = next_scene
 
         active_scene.update()
         active_scene.draw(screen)
