@@ -45,7 +45,7 @@ def main():
         active_scene.update()
         active_scene.draw(screen)
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(15)
 
 
 if __name__ == "__main__":

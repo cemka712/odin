@@ -28,6 +28,10 @@ class Player:
                 self.pos[0] = new_y
                 self.pos[1] = new_x
 
+    def handle_event(self, event, enemy):
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_x:
+            self.attack(enemy)
+
     def attack(self, enemy):
         if self.pos == enemy.pos and not enemy.is_dead:
             enemy.hp -= 1              

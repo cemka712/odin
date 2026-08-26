@@ -2,7 +2,9 @@ import sys
 
 import pygame
 
-from src.classes import Enemy, Environment, Player
+from src.entities.enemy import Enemy
+from src.entities.enviroment import Environment
+from src.entities.player import Player
 from src.config import settings
 
 
@@ -32,46 +34,13 @@ class GameScene(BaseScene):
         self.enemy = Enemy([3, 5], settings.TILE_WIDTH, settings.TILE_HEIGHT)
 
     def handle_event(self, event):
-        pass
-        # if event.type == pygame.KEYDOWN and event.key == pygame.K_x:
-        #     self.player.attack(self.enemy)
+        self.player.handle_event(event, self.enemy)
 
     def update(self):
-        pass
-        # self.player.update_movement()
-        # self.enemy.update() #[cite: 9]
+        self.player.update_movement()
+        self.enemy.update()
 
     def draw(self, screen):
-        self.env.draw(screen) #[cite: 9]
-        # self.player.draw(screen) #[cite: 9]
-        # self.enemy.draw(screen) #[cite: 9]
-
-
-# # === Менеджер сцен и главный цикл ===
-# def main():
-#     pygame.init()
-#     screen = pygame.display.set_mode((640, 480))
-#     pygame.display.set_caption("Scene Manager Test")
-#     clock = pygame.time.Clock()
-
-#     # Устанавливаем начальную сцену
-#     active_scene = MenuScene()
-
-#     while True:
-#         for event in pygame.event.get():
-#             if event.type == pygame.QUIT:
-#                 pygame.quit()
-#                 sys.exit()
-
-#             next_scene = active_scene.handle_event(event)
-#             if next_scene is not None:
-#                 active_scene = next_scene
-
-#         active_scene.update()
-#         active_scene.draw(screen)
-
-#         pygame.display.flip()
-#         clock.tick(60)
-
-# if __name__ == "__main__":
-#     main()
+        self.env.draw(screen)
+        self.player.draw(screen)
+        self.enemy.draw(screen)
