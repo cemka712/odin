@@ -1,74 +1,60 @@
-import sys
+from __future__ import annotations
 
 import pygame
+from pygame.event import Event
 
-from src.classes import Enemy, Environment, Player
 from src.config import settings
+from src.entities.enemy import Enemy
+from src.entities.enviroment import Environment
+from src.entities.player import Player
+
 
 class BaseScene:
-    # ... (Остается как раньше)
-    def handle_event(self, event): pass
-    def update(self): pass
-    def draw(self, screen): pass
+    def handle_event(self, event: Event) -> BaseScene | None:
+        pass
+    def update(self) -> None:
+        pass
+    def draw(self, screen: pygame.Surface) -> None:
+        pass
+
 
 class MenuScene(BaseScene):
-    def handle_event(self, event):
+    def handle_event(self, event: Event) -> BaseScene | None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
             # Передаем размеры экрана в игровую сцену
-            return GameScene(settings.SCREEN_WIDTH, settings.SCREEN_WIDTH)
+            return GameScene()
         return None
 
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface) -> None:
         screen.fill((0, 0, 0))
-        pygame.draw.rect(screen, (0, 200, 0), (120, 200, 400, 80)) # Заглушка вместо текста
+        pygame.draw.rect(screen, (0, 200, 0), (120, 200, 400, 80))
 
 
 
 class GameScene(BaseScene):
-    def __init__(self, screen_width, screen_height):
+    def __init__(self) -> None:
         self.env = Environment()
-        self.player = Player([1, 1], settings.TILE_WIDTH, settings.TILE_HEIGHT)
-        self.enemy = Enemy([3, 5], settings.TILE_WIDTH, settings.TILE_HEIGHT)
+        self.player = Player((1, 1), settings.TILE_WIDTH, settings.TILE_HEIGHT)
+        self.enemy = Enemy((3, 5), settings.TILE_WIDTH, settings.TILE_HEIGHT)
 
-    def handle_event(self, event):
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_x:
-            self.player.attack(self.enemy)
+    def handle_event(self, event: Event) -> BaseScene | None:
+        self.player.handle_event(event, self.enemy)
+        return None
 
-    def update(self):
+    def update(self) -> None:
         self.player.update_movement()
-        self.enemy.update() #[cite: 9]
+        self.enemy.update()
 
-    def draw(self, screen):
-        self.env.draw(screen) #[cite: 9]
-        self.player.draw(screen) #[cite: 9]
-        self.enemy.draw(screen) #[cite: 9]
+    def draw(self, screen: pygame.Surface) -> None:
+        width = settings.SCREEN_WIDTH
+        height = settings.SCREEN_HEIGHT
+        cols = settings.COLS
+        rows = settings.ROWS
 
+        start_x = (width // 2) - (cols * settings.TILE_WIDTH // 2)
+        start_y = (height // 2) - (rows * settings.TILE_HEIGHT // 2)
+        start_pos = (start_x, start_y)
 
-# === Менеджер сцен и главный цикл ===
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((640, 480))
-    pygame.display.set_caption("Scene Manager Test")
-    clock = pygame.time.Clock()
-
-    # Устанавливаем начальную сцену
-    active_scene = MenuScene()
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-            next_scene = active_scene.handle_event(event)
-            if next_scene is not None:
-                active_scene = next_scene
-
-        active_scene.update()
-        active_scene.draw(screen)
-
-        pygame.display.flip()
-        clock.tick(60)
-
-if __name__ == "__main__":
-    main()
+        self.env.draw(screen, start_pos)
+        self.player.draw(screen, start_pos)
+        self.enemy.draw(screen, start_pos)

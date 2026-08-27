@@ -1,0 +1,18 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-version:
+    name: Validate version
+    uses: ./.github/workflows/validate-version.yml
+    with:
+      VUH_VERSION: 'v2.14.3'
+
+  quality-assurance-api:
+    name: Quality assurance for app
+    uses: ./.github/workflows/qa-app.yml
+    with:
+      VUH_VERSION: 'v2.14.3'
