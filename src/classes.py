@@ -1,5 +1,3 @@
-from pprint import pprint
-
 import pygame
 
 from src.config import settings
@@ -20,7 +18,7 @@ class Environment:
         # Рисуем центральную точку для проверки
         pygame.draw.circle(screen, (0, 255, 0), (width // 2, height // 2), 3)
 
-        # Вычисляем стартовую (верхнюю левую) координату сетки так, 
+        # Вычисляем стартовую (верхнюю левую) координату сетки так,
         # чтобы центр карты совпал с центром экрана
         start_x = (width // 2) - (cols * settings.TILE_WIDTH // 2)
         start_y = (height // 2) - (rows * settings.TILE_HEIGHT // 2)
@@ -28,7 +26,6 @@ class Environment:
         # Один цикл для обхода ВСЕЙ карты без срезов
         for row_idx, row in enumerate(self.map_data):
             for col_idx, tile in enumerate(row):
-                
                 # Координата текущей плитки рассчитывается от стартовой точки
                 x = start_x + col_idx * settings.TILE_WIDTH
                 y = start_y + row_idx * settings.TILE_HEIGHT
@@ -47,7 +44,7 @@ class Environment:
                 # screen.blit(self.floor_img, (x, y))
                 # if col_idx == l_x and row_idx == l_y:
                 #     pygame.draw.circle(screen, (0, 255, 0), (x,y), 3)
-                # else: 
+                # else:
                 #     pygame.draw.circle(screen, (255, 0, 0), (x,y), 3)
 
                 # if tile == 1:
@@ -64,11 +61,15 @@ class Player:
     def get_movement(self):
         dy, dx = 0, 0
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]: dx = -1
-        if keys[pygame.K_RIGHT]: dx = 1
-        if keys[pygame.K_UP]: dy = -1 
-        if keys[pygame.K_DOWN]: dy = 1
-        return dy, dx 
+        if keys[pygame.K_LEFT]:
+            dx = -1
+        if keys[pygame.K_RIGHT]:
+            dx = 1
+        if keys[pygame.K_UP]:
+            dy = -1
+        if keys[pygame.K_DOWN]:
+            dy = 1
+        return dy, dx
 
     def update_movement(self):
         dy, dx = self.get_movement()
@@ -81,8 +82,8 @@ class Player:
 
     def attack(self, enemy):
         if self.pos == enemy.pos and not enemy.is_dead:
-            enemy.hp -= 1              
-            enemy.hit_effect_timer = 10     
+            enemy.hp -= 1
+            enemy.hit_effect_timer = 10
 
             if enemy.hp <= 0:
                 enemy.is_dead = True

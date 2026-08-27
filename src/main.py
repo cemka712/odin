@@ -1,18 +1,14 @@
-import sys
 import os
+import sys
 
 os.environ["DISPLAY"] = ":0"
 os.environ["SDL_VIDEODRIVER"] = "x11"
 
 import pygame
 
-# Импортируем классы из вашего нового файла
+from src.config import settings
 from src.scene import MenuScene
 
-# SCREEN_WIDTH = 640
-# SCREEN_HEIGHT = 480
-
-from src.config import settings
 
 def main():
     pygame.init()
@@ -31,10 +27,9 @@ def main():
             if event.type == pygame.VIDEORESIZE:
                 settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT = event.w, event.h
                 screen = pygame.display.set_mode(
-                    (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT), 
+                    (settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT),
                     pygame.RESIZABLE
                 )
-
 
             next_scene = active_scene.handle_event(event)
 

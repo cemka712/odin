@@ -13,11 +13,15 @@ class Player:
     def get_movement(self):
         dy, dx = 0, 0
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]: dx = -1
-        if keys[pygame.K_RIGHT]: dx = 1
-        if keys[pygame.K_UP]: dy = -1 
-        if keys[pygame.K_DOWN]: dy = 1
-        return dy, dx 
+        if keys[pygame.K_LEFT]:
+            dx = -1
+        if keys[pygame.K_RIGHT]:
+            dx = 1
+        if keys[pygame.K_UP]:
+            dy = -1
+        if keys[pygame.K_DOWN]:
+            dy = 1
+        return dy, dx
 
     def update_movement(self):
         dy, dx = self.get_movement()
@@ -34,13 +38,13 @@ class Player:
 
     def attack(self, enemy):
         if self.pos == enemy.pos and not enemy.is_dead:
-            enemy.hp -= 1              
-            enemy.hit_effect_timer = 10     
+            enemy.hp -= 1
+            enemy.hit_effect_timer = 10
 
             if enemy.hp <= 0:
                 enemy.is_dead = True
 
-    def draw(self, screen):
-        x = self.pos[1] * self.tile_w
-        y = self.pos[0] * self.tile_h
+    def draw(self, screen, start_pos):
+        x = start_pos[0] + self.pos[1] * self.tile_w
+        y = start_pos[1] +self.pos[0] * self.tile_h
         screen.blit(self.image, (x, y))

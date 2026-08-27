@@ -23,15 +23,13 @@ class Enemy:
             self.hit_effect_timer -= 1
         pass #[cite: 3]
 
-    def draw(self, screen):
+    def draw(self, screen, start_pos):
         # Если враг мертв, выходим из функции и не рисуем его
         if self.is_dead:
             return
 
-        x = self.pos[1] * self.tile_w
-        y = self.pos[0] * self.tile_h
-
-        # --- ВИЗУАЛЬНЫЙ ЭФФЕКТ: Тряска и покраснение ---
+        x = start_pos[0] + self.pos[1] * self.tile_w
+        y = start_pos[1] + self.pos[0] * self.tile_h
         if self.hit_effect_timer > 0:
             x += 5  # Эффект тряски (небольшой сдвиг по оси X)
             # Рисуем красный квадрат поверх врага как вспышку урона/крови

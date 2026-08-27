@@ -1,11 +1,9 @@
-import sys
-
 import pygame
 
+from src.config import settings
 from src.entities.enemy import Enemy
 from src.entities.enviroment import Environment
 from src.entities.player import Player
-from src.config import settings
 
 
 class BaseScene:
@@ -41,6 +39,15 @@ class GameScene(BaseScene):
         self.enemy.update()
 
     def draw(self, screen):
-        self.env.draw(screen)
-        self.player.draw(screen)
-        self.enemy.draw(screen)
+        width = settings.SCREEN_WIDTH
+        height = settings.SCREEN_HEIGHT
+        cols = settings.COLS
+        rows = settings.ROWS
+
+        start_x = (width // 2) - (cols * settings.TILE_WIDTH // 2)
+        start_y = (height // 2) - (rows * settings.TILE_HEIGHT // 2)
+        start_pos = (start_x, start_y)
+
+        self.env.draw(screen, start_pos)
+        self.player.draw(screen, start_pos)
+        self.enemy.draw(screen, start_pos)

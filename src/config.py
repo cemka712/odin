@@ -1,9 +1,8 @@
 import json
-from pprint import pprint
 
-from pydantic import computed_field, model_validator
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pygame import image, Surface
+from pygame import Surface, image
 
 
 class ImageSettings(BaseSettings):
@@ -27,7 +26,7 @@ class ImageSettings(BaseSettings):
         self.WALL_IMG = image.load(self.STATIC_DIR+'Стена.bmp')
         self.PLAYER_IMG = image.load(self.STATIC_DIR+'edward.png')
         self.FLOOR_IMG = image.load(self.STATIC_DIR+'доска.bmp')
-        self.ENEMY_IMG = image.load(self.STATIC_DIR+'horror.bmp')
+        self.ENEMY_IMG = image.load(self.STATIC_DIR+'horror.png')
 
         return self
 
@@ -52,7 +51,7 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def create_map(self):
-        with open("map.json", "r", encoding="utf-8") as file:
+        with open("map.json", encoding="utf-8") as file:
             data = json.load(file)
         self.MAP = data
         self.ROWS = len(self.MAP)
