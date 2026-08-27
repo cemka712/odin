@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality-assurance:
+    name: Quality Assurance API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Установка uv
+        uses: astral-sh/setup-uv@v3
+      
+      - name: Установка Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      
+      - name: Синхронизация зависимостей
+        run: uv sync --frozen
+      
+      - name: Запуск ruff
+        run: uv run ruff check .
