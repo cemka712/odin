@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -11,18 +12,20 @@ class ImageSettings(BaseSettings):
         env_file='.env'
     )
 
-    STATIC_DIR: str
+    STATIC_DIR: str = 'chobi_ne_bilo_pohmeliya'
 
-    WALL_IMG: Surface | None = None
-    PLAYER_IMG: Surface | None = None
-    FLOOR_IMG: Surface | None = None
-    ENEMY_IMG: Surface | None = None
+    WALL_IMG: Surface  = Surface(size=(1,1))
+    PLAYER_IMG: Surface = Surface(size=(1,1))
+    FLOOR_IMG: Surface  = Surface(size=(1,1))
+    ENEMY_IMG: Surface  = Surface(size=(1,1))
 
-    def __deepcopy__(self, memo):
+    def __deepcopy__(self, memo: dict[int, Any] | None = None) -> Any:
+        if memo is None:
+            memo = {}
         return self
 
     @model_validator(mode="after")
-    def all_img(self):
+    def all_img(self) -> Any:
         self.WALL_IMG = image.load(self.STATIC_DIR+'Стена.bmp')
         self.PLAYER_IMG = image.load(self.STATIC_DIR+'edward.png')
         self.FLOOR_IMG = image.load(self.STATIC_DIR+'доска.bmp')
@@ -38,19 +41,19 @@ class Settings(BaseSettings):
         env_file='.env'
     )
 
-    SCREEN_WIDTH: int | None = None
-    SCREEN_HEIGHT: int
-    COLS: int | None = None
-    ROWS: int | None = None
-    TILE_HEIGHT: int | None = None
-    TILE_WIDTH: int | None = None
-    MAP: list | None = None
+    SCREEN_WIDTH: int = 123
+    SCREEN_HEIGHT: int = 123
+    COLS: int = 0
+    ROWS: int = 0
+    TILE_HEIGHT: int = 8
+    TILE_WIDTH: int = 8
+    MAP: list[list[int]] = []
 
     IMAGE: ImageSettings = ImageSettings()
 
 
     @model_validator(mode="after")
-    def create_map(self):
+    def create_map(self) -> Any:
         with open("map.json", encoding="utf-8") as file:
             data = json.load(file)
         self.MAP = data

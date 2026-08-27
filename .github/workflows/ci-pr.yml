@@ -23,5 +23,5 @@ jobs:
       - name: Синхронизация зависимостей
         run: uv sync --frozen
       
-      - name: Запуск ruff
-        run: uv run ruff check .
+      - name: Запуск QA
+        run: make full_qa

@@ -4,7 +4,7 @@ from src.config import settings
 
 
 class Enemy:
-    def __init__(self, start_pos, tile_w, tile_h):
+    def __init__(self, start_pos: tuple[int, int], tile_w: int, tile_h: int) -> None:
         self.pos = list(start_pos) #[cite: 3]
         self.tile_w = tile_w #[cite: 3]
         self.tile_h = tile_h #[cite: 3]
@@ -17,13 +17,13 @@ class Enemy:
         self.is_dead = False         # Жив ли враг
         self.hit_effect_timer = 0    # Таймер эффекта получения урона
 
-    def update(self):
+    def update(self) -> None:
         # Уменьшаем таймер эффекта каждый кадр
         if self.hit_effect_timer > 0:
             self.hit_effect_timer -= 1
         pass #[cite: 3]
 
-    def draw(self, screen, start_pos):
+    def draw(self, screen: pygame.Surface, start_pos: tuple[int, int]) -> None:
         # Если враг мертв, выходим из функции и не рисуем его
         if self.is_dead:
             return

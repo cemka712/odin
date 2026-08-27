@@ -7,17 +7,17 @@ os.environ["SDL_VIDEODRIVER"] = "x11"
 import pygame
 
 from src.config import settings
-from src.scene import MenuScene
+from src.scene import BaseScene, MenuScene
 
 
-def main():
+def main() -> None:
     pygame.init()
     print('Начал выполнение')
     screen = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
     pygame.display.set_caption("My Game")
     clock = pygame.time.Clock()
 
-    active_scene = MenuScene()
+    active_scene:BaseScene = MenuScene()
 
     while True:
         for event in pygame.event.get():
